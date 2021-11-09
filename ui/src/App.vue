@@ -73,11 +73,11 @@ export default defineComponent({
           menu.value = response.data;
           if (response.data.length > 0) {
             name.value = response.data[0].name;
-            selectedKeys.value = [response.data[0].name];
+            openKeys.value = [response.data[0].name];
           }
           if (response.data[0].queues.length > 0) {
             queueName.value = response.data[0].queues[0];
-            openKeys.value = [response.data[0].queues[0]];
+            selectedKeys.value = [response.data[0].queues[0]];
           }
         }
       });
