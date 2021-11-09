@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-button type="primary" :size="small" @click="showModal">添加JOB</a-button>
+    <a-button type="primary" size="small" @click="showModal">添加JOB</a-button>
     <a-table
       :columns="columns"
       :data-source="jobs.items"
@@ -9,21 +9,26 @@
       @change="changePagination"
       rowKey="id"
       :loading="tableLoading"
+      size="middle"
     >
       <template #bodyCell="{ column, text }">
         <template v-if="column.dataIndex == 'progress'">
           <a-progress type="circle" :percent="text" :width="35" />
         </template>
-        <template v-if="column.dataIndex == 'attemptsMade'">
-          {{ text === "0" ? "否" : "是" }}
-        </template>
-        <template v-if="column.dataIndex == 'opts.attempts'">
-          {{ text }}次
+        <template v-if="column.dataIndex == 'data'">
+          <!-- <a-tooltip v-if="text.length > 50">
+            <template #title> {{ text }}</template>
+            {{ text.substr(0, 50) }}......
+          </a-tooltip> -->
+          <span v-if="text.length>50"> {{ text.substr(0, 50) }}......</span>
+          <span v-else>{{ text }}</span>
         </template>
         <template v-if="column.dataIndex == 'other'">
-          <a-popconfirm :title="text" ok-text="Yes" cancel-text="No">
-            <a href="#">查看</a>
-          </a-popconfirm>
+          <a-tooltip v-if="text.length > 30">
+            <template #title> {{ text }}</template>
+            {{ text.substr(0, 30) }}......
+          </a-tooltip>
+          <span v-else>{{ text }}</span>
         </template>
       </template>
       <template #expandedRowRender="{ record }">
@@ -39,11 +44,11 @@
         </p>
       </template>
       <template #action="{ record }">
-        <div style="width: 130px">
+        <div>
           <a-button
             type="link"
-            :size="small"
-            style="margin: 0px 2px 0px 0px"
+            size="small"
+            style=""
             @click="
               () => {
                 detailJobData = record;
@@ -53,19 +58,26 @@
             "
             >详情</a-button
           >
-          <a-button type="link" :size="small" @click="jobLogClick(record.id)"
+          <a-button type="link" size="small" @click="jobLogClick(record.id)"
             >日志</a-button
           >
         </div>
 
-        <div style="width: 130px; margin: 5px 0px 0px 0px">
-          <a-button
-            type="link"
-            :size="small"
-            style="margin: 0px 2px 0px 0px"
-            @click="retryJob(record.id)"
-            >重试</a-button
+        <div>
+          <a-popconfirm
+            title="确定重试此任务？"
+            ok-text="Yes"
+            cancel-text="No"
+            @confirm="retryJob(record.id)"
+            @cancel="cancel"
           >
+            <a href="#"
+              ><a-button type="link" size="small" style="color: orange"
+                >重试</a-button
+              ></a
+            >
+          </a-popconfirm>
+
           <a-popconfirm
             title="确认删除此任务吗？"
             ok-text="Yes"
@@ -73,7 +85,9 @@
             @confirm="deleteJob(record.id)"
             @cancel="cancel"
           >
-            <a href="#"><a-button type="link" :size="small">删除</a-button></a>
+            <a href="#"
+              ><a-button type="link" size="small" danger>删除</a-button></a
+            >
           </a-popconfirm>
         </div>
       </template>
@@ -122,28 +136,35 @@
           :wrapper-col="wrapperCol"
         >
           <a-form-item label="ID" name="id">
-            <a-input v-model:value="detailJobData.id" />
+            <a-input v-model:value="detailJobData.id" disabled />
           </a-form-item>
           <a-form-item label="数据" name="data">
-            <a-textarea v-model:value="detailJobData.data" :rows="8" />
+            <a-textarea v-model:value="detailJobData.data" :rows="5" disabled />
+          </a-form-item>
+          <a-form-item label="失败原因" name="failedReason">
+            <a-textarea
+              v-model:value="detailJobData.failedReason"
+              :rows="2"
+              disabled
+            />
           </a-form-item>
           <a-form-item label="进度" name="progress">
             <a-progress :percent="detailJobData.progress" status="active" />
           </a-form-item>
           <a-form-item label="重试次数" name="opts.attempts">
-            <a-input v-model:value="detailJobData.opts.attempts" />
+            <a-input v-model:value="detailJobData.opts.attempts" disabled />
           </a-form-item>
           <a-form-item label="延时(毫秒)" name="delay">
-            <a-input v-model:value="detailJobData.opts.delay" />
+            <a-input v-model:value="detailJobData.opts.delay" disabled />
           </a-form-item>
           <a-form-item label="优先级" name="priority">
-            <a-input v-model:value="detailJobData.opts.priority" />
+            <a-input v-model:value="detailJobData.opts.priority" disabled />
           </a-form-item>
           <a-form-item label="创建时间" name="optstimestamp">
-            <a-input v-model:value="detailJobData.opts.timestamp" />
+            <a-input v-model:value="detailJobData.opts.timestamp" disabled />
           </a-form-item>
           <a-form-item label="完成时间" name="timestamp">
-            <a-input v-model:value="detailJobData.timestamp" />
+            <a-input v-model:value="detailJobData.timestamp" disabled />
           </a-form-item>
         </a-form>
         <template #footer>
@@ -169,7 +190,7 @@
           bordered
           :pagination="logPagination"
           @change="logChangePagination"
-          :size="small"
+          size="small"
         >
           <template #logContent="{ text }">
             <a>{{ text }}</a>
@@ -199,25 +220,40 @@ const columns = [
     slots: { customRender: "bodyCell" },
   },
   {
-    title: "重试",
+    title: "数据",
+    dataIndex: "data",
+    key: "data",
+    slots: { customRender: "bodyCell" },
+  },
+  {
+    title: "已试/尝试",
     dataIndex: "opts.attempts",
     key: "opts.attempts",
     slots: { customRender: "bodyCell" },
+    customRender: function (data: any) {
+      const attempts = `${data.record.attemptsMade}/${data.record.opts.attempts}`;
+      return attempts;
+    },
   },
   {
     title: "创建时间",
-    dataIndex: "opts.timestamp",
+    dataIndex: "timestamp",
   },
   {
     title: "完成时间",
-    dataIndex: "timestamp",
-    key: "timestamp",
+    dataIndex: "finishedOn",
+    key: "finishedOn",
   },
   {
-    title: "可重复任务",
-    dataIndex: "attemptsMade",
-    key: "attemptsMade",
-    slots: { customRender: "bodyCell" },
+    title: "可重复",
+    dataIndex: "opts.repeat",
+    key: "opts.repeat",
+    customRender: function (data: any) {
+      if (!data.record.opts.repeat) {
+        return "否";
+      }
+      return JSON.stringify(data.record.opts.repeat);
+    },
   },
   {
     title: "其它信息",
@@ -257,6 +293,36 @@ export default defineComponent({
     status: String,
   },
   setup(props) {
+    const dateformat = function (date: Date, fmt: string) {
+      var o = {
+        "M+": date.getMonth() + 1, //月份
+        "d+": date.getDate(), //日
+        "h+": date.getHours(), //小时
+        "m+": date.getMinutes(), //分
+        "s+": date.getSeconds(), //秒
+        "q+": Math.floor((date.getMonth() + 3) / 3), //季度
+        S: date.getMilliseconds(), //毫秒
+      };
+      if (/(y+)/.test(fmt)) {
+        fmt = fmt.replace(
+          RegExp.$1,
+          (date.getFullYear() + "").substr(4 - RegExp.$1.length)
+        );
+      }
+      for (var k in o) {
+        if (new RegExp("(" + k + ")").test(fmt)) {
+          fmt = fmt.replace(
+            RegExp.$1,
+            RegExp.$1.length == 1
+              ? Reflect.get(o, k)
+              : ("00" + Reflect.get(o, k)).substr(
+                  ("" + Reflect.get(o, k)).length
+                )
+          );
+        }
+      }
+      return fmt;
+    };
     let pagination = ref({
       current: 1,
       pageSize: 20,
@@ -282,12 +348,18 @@ export default defineComponent({
           result.items.forEach((element: any) => {
             element.data = JSON.stringify(element.data, null, 4);
             element.other = JSON.stringify(element.opts, null, 4);
-            element.timestamp = new Date(element.timestamp)
-              .toJSON()
-              .replace("T", " ");
-            element.opts.timestamp = new Date(element.opts.timestamp)
-              .toJSON()
-              .replace("T", " ");
+            element.timestamp = dateformat(
+              new Date(element.timestamp),
+              "yyyy-MM-dd hh:mm:ss"
+            );
+            if (element.finishedOn) {
+              element.finishedOn = dateformat(
+                new Date(element.finishedOn),
+                "yyyy-MM-dd hh:mm:ss"
+              );
+            } else {
+              element.finishedOn = "无";
+            }
           });
           jobs.value = result;
           pagination.value = {

@@ -1,21 +1,21 @@
 <template>
-  <a-tabs type="card" v-model="activeKey">
-    <a-tab-pane key="1" :tab="'等待中(' + jobCount.waiting+')'">
+  <a-tabs type="card" v-model="activeKey" size="small">
+    <a-tab-pane key="1" :tab="'等待中(' + jobCount.waiting + ')'">
       <JobTable :name="name" :queueName="queueName" status="waiting" />
     </a-tab-pane>
-    <a-tab-pane key="2" :tab="'处理中(' + jobCount.active+')'">
+    <a-tab-pane key="2" :tab="'处理中(' + jobCount.active + ')'">
       <JobTable :name="name" :queueName="queueName" status="active" />
     </a-tab-pane>
-    <a-tab-pane key="3" :tab="'已完成(' + jobCount.completed+')'">
+    <a-tab-pane key="3" :tab="'已完成(' + jobCount.completed + ')'">
       <JobTable :name="name" :queueName="queueName" status="completed" />
     </a-tab-pane>
-    <a-tab-pane key="4" :tab="'延迟中(' + jobCount.delayed+')'">
+    <a-tab-pane key="4" :tab="'延迟中(' + jobCount.delayed + ')'">
       <JobTable :name="name" :queueName="queueName" status="delayed" />
     </a-tab-pane>
-    <a-tab-pane key="5" :tab="'失败(' + jobCount.failed+')'">
+    <a-tab-pane key="5" :tab="'失败(' + jobCount.failed + ')'">
       <JobTable :name="name" :queueName="queueName" status="failed" />
     </a-tab-pane>
-    <a-tab-pane key="6" :tab="'暂停(' + jobCount.paused+')'">
+    <a-tab-pane key="6" :tab="'暂停(' + jobCount.paused + ')'">
       <JobTable :name="name" :queueName="queueName" status="paused" />
     </a-tab-pane>
   </a-tabs>
@@ -28,14 +28,6 @@ export default defineComponent({
   name: "JobTag",
   data() {
     return {
-      // jobCount: {
-      //   completed: 0,
-      //   waiting: 0,
-      //   active: 0,
-      //   delayed: 0,
-      //   failed: 0,
-      //   paused: 0,
-      // },
     };
   },
   props: {
@@ -82,6 +74,7 @@ export default defineComponent({
     );
     onMounted(() => {
       getJobCount();
+      const timer = setInterval(getJobCount, 5000);
     });
     return { activeKey: ref("1"), jobCount, getJobCount };
   },
