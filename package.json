@@ -1,0 +1,24 @@
+{
+  "name": "bull-ui",
+  "version": "1.0.0",
+  "description": "Bull Queue Manager with UI",
+  "main": "index.js",
+  "scripts": {
+    "dev:api": "cd ./api && npm run dev",
+    "start:api": "cd ./api &&  npm run start",
+    "build:api": "cd ./api &&  npm run build",
+    "serve:ui": "cd ./ui && npm run serve",
+    "build:ui": "cd ./ui && npm run build",
+    "lint:ui": "cd ./ui && npm run lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/asynode/bull-ui.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/asynode/bull-ui/issues"
+  },
+  "homepage": "https://github.com/asynode/bull-ui#readme"
+}
