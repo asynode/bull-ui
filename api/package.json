@@ -7,11 +7,19 @@
   "scripts": {
     "dev": "node -r ts-node/register ./app.ts",
     "start": "node ./dist/app.js",
-    "build": "rm -rf ../dist && rm -rf ./dashboard && tsc && cp -f .env.example .env package.json ../LICENSE ../dist",
+    "build": "rm -rf ../dist && rm -rf ./dashboard && tsc && cp -f .env.example .env package.json ../LICENSE ../README.md ../dist",
     "stop": "echo \"stop.\""
   },
   "author": "",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/asynode/bull-ui.git"
+  },
+  "bugs": {
+    "url": "https://github.com/asynode/bull-ui/issues"
+  },
+  "homepage": "https://github.com/asynode/bull-ui#readme",
   "dependencies": {
     "@koa/cors": "^3.1.0",
     "bull": "^4.1.0",
