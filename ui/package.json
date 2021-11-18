@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build && cp -f -r ./dist/ ../api/dashboard && cp -f -r ./dist/ ../api/dist/dashboard",
+    "build": "vue-cli-service build && cp -f -r ./dist/ ../api/dashboard && cp -f -r ./dist/ ../dist/dashboard",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
