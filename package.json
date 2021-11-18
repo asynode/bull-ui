@@ -1,5 +1,5 @@
 {
-  "name": "bull-ui",
+  "name": "@asynode/bull-ui",
   "version": "1.0.0",
   "description": "Bull Queue Manager with UI",
   "main": "index.js",
@@ -9,7 +9,8 @@
     "build:api": "cd ./api &&  npm run build",
     "serve:ui": "cd ./ui && npm run serve",
     "build:ui": "cd ./ui && npm run build",
-    "lint:ui": "cd ./ui && npm run lint"
+    "lint:ui": "cd ./ui && npm run lint",
+    "build":"cd ./api &&  npm run build && cd ../ui && npm run build"
   },
   "repository": {
     "type": "git",

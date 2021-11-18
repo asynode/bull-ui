@@ -22,7 +22,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, onMounted, ref, watch } from "vue";
-import { get } from "../../request";
+import { get } from "../request";
 import JobTable from "./jobtable.vue";
 export default defineComponent({
   name: "JobTag",
@@ -54,7 +54,9 @@ export default defineComponent({
         (response) => {
           jobCount.value = response.data;
         }
-      );
+      ).catch(err=>{
+        console.log(err);
+      });
     };
     watch(
       () => props.name,

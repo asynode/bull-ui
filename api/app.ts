@@ -1,12 +1,11 @@
-import koa from 'koa';
-import { _router } from './router';
 import './env';
-import { QueueService } from './services/queue';
+import koa from 'koa';
 const cors = require('@koa/cors');
 import bodyParser from 'koa-bodyparser'
 import { getConfiguration } from './envConfig';
 import Utility from './utility';
-const app = new koa;
+import { bullApi,bullUi } from './index';
+const app = new koa();
 app.use(cors({
     origin: () => {
         return '*';
@@ -22,13 +21,10 @@ app.use(async (ctx, next) => {
         ctx.body = err.message;
     }
 });
-app.use(_router.routes());
+app.use(bullApi());
+app.use(bullUi());
 
-app.use(function (ctx) {
-    ctx.body = "Hello World";
-});
 
-new QueueService().init();
 let port = getConfiguration('PORT');
 if (!port) {
     port = "80";
@@ -36,3 +32,4 @@ if (!port) {
 app.listen(Utility.toNumber(port), function () {
     console.log('Server running on http://0.0.0.0:' + port);
 });
+

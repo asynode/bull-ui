@@ -1,32 +1,35 @@
 {
-  "name": "bull-ui-api",
+  "name": "@asynode/bull-ui",
   "version": "1.0.0",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "dev": "node -r ts-node/register ./app.ts",
     "start": "node ./dist/app.js",
-    "build": "tsc && cp -f .env.example .env ./dist",
+    "build": "rm -rf ./dist && rm -rf ./dashboard && tsc && cp -f .env.example .env package.json ./dist",
     "stop": "echo \"stop.\""
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@koa/cors": "^3.1.0",
-    "@types/bull": "^3.15.5",
-    "@types/dotenv-safe": "^8.1.2",
-    "@types/koa": "^2.13.4",
-    "@types/koa-bodyparser": "^4.3.3",
-    "@types/koa-router": "^7.4.4",
-    "@types/lodash": "^4.14.176",
     "bull": "^4.1.0",
     "dotenv-safe": "^8.2.0",
     "koa": "^2.13.4",
     "koa-bodyparser": "^4.3.0",
     "koa-router": "^10.1.1",
+    "koa-static": "^5.0.0",
     "lodash": "^4.17.21",
     "typescript": "^4.4.4"
   },
   "devDependencies": {
+    "@types/bull": "^3.15.5",
+    "@types/dotenv-safe": "^8.1.2",
+    "@types/koa": "^2.13.4",
+    "@types/koa-bodyparser": "^4.3.3",
+    "@types/koa-router": "^7.4.4",
+    "@types/koa-static": "^4.0.2",
+    "@types/lodash": "^4.14.176",
     "ts-node": "^10.4.0"
   },
   "description": ""
