@@ -1,7 +1,6 @@
 import axios from 'axios'
 
-const host = 'http://127.0.0.1:3001';
-
+const host = process.env.VUE_APP_API_HOST;
 export function post(path: string, data: any) {
     return axios({
         method: 'post',

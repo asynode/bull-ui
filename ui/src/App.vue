@@ -49,7 +49,7 @@
 <script lang="ts">
 import { UserOutlined } from "@ant-design/icons-vue";
 import { defineComponent, onMounted, ref } from "vue";
-import { get } from "../request";
+import { get } from "./request";
 import JobTag from "./components/jobtag.vue";
 export default defineComponent({
   components: {
@@ -57,30 +57,46 @@ export default defineComponent({
     JobTag,
   },
   setup() {
-    let selectedKeys = ref<string[]>(["default"]);
-    let openKeys = ref<string[]>(["empty"]);
+    let selectedKeys = ref<string[]>(["empty"]);
+    let openKeys = ref<string[]>(["default"]);
     let menu = ref([
       {
         name: "default",
         queues: ["empty"],
       },
     ]);
-    let name = ref("");
-    let queueName = ref("");
+    let name = ref("default");
+    let queueName = ref("empty");
     onMounted(() => {
-      get("/instance/list", {}).then((response) => {
-        if (response.data.length > 0) {
-          menu.value = response.data;
+      get("/job/instance/list", {})
+        .then((response) => {
           if (response.data.length > 0) {
-            name.value = response.data[0].name;
-            openKeys.value = [response.data[0].name];
+            menu.value = response.data;
+            if (response.data.length > 0) {
+              name.value = response.data[0].name;
+              openKeys.value = [response.data[0].name];
+            }
+            if (response.data[0].queues.length > 0) {
+              queueName.value = response.data[0].queues[0];
+              selectedKeys.value = [response.data[0].queues[0]];
+            }
+          }else{
+            menu.value = [
+            {
+              name: "default",
+              queues: ["empty"],
+            },
+          ];
           }
-          if (response.data[0].queues.length > 0) {
-            queueName.value = response.data[0].queues[0];
-            selectedKeys.value = [response.data[0].queues[0]];
-          }
-        }
-      });
+        })
+        .catch((err) => {
+          menu.value = [
+            {
+              name: "default",
+              queues: ["empty"],
+            },
+          ];
+        });
     });
     const clickMenu = (data: any) => {
       name.value = data.keyPath[0];

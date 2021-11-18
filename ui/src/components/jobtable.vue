@@ -205,7 +205,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, reactive, ref, toRaw, watch } from "vue";
-import { get, post, requestdelete, requestput } from "../../request";
+import { get, post, requestdelete, requestput } from "../request";
 import { message } from "ant-design-vue";
 const columns = [
   {
@@ -368,7 +368,7 @@ export default defineComponent({
             total: response.data.pagination.total,
           };
         })
-        .catch(() => {
+        .catch((err) => {
           tableLoading.value = false;
         });
     };
