@@ -12,6 +12,14 @@
   },
   "author": "",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/asynode/bull-ui.git"
+  },
+  "bugs": {
+    "url": "https://github.com/asynode/bull-ui/issues"
+  },
+  "homepage": "https://github.com/asynode/bull-ui#readme",
   "dependencies": {
     "@koa/cors": "^3.1.0",
     "bull": "^4.1.0",
