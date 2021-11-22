@@ -36,7 +36,7 @@
         </a-layout-sider>
         <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
           <!--content -->
-          <JobTag ref="jobTagRef" :name="name" :queueName="queueName" />
+          <JobTag ref="jobTagRef" :name="name" :queueName="queueName"/>
           <!--content -->
         </a-layout-content>
       </a-layout>

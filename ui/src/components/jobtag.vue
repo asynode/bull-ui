@@ -1,34 +1,82 @@
 <template>
-  <a-tabs type="card" v-model="activeKey" size="small">
-    <a-tab-pane key="1" :tab="'等待中(' + jobCount.waiting + ')'">
-      <JobTable :name="name" :queueName="queueName" status="waiting" />
+  <a-tabs type="card" v-model="activeKey" size="small" @change="tabChange">
+    <a-tab-pane key="waiting" :tab="'等待中(' + jobCount.waiting + ')'">
+      <JobTable
+        :name="name"
+        :queueName="queueName"
+        status="waiting"
+        :count="jobCount.waiting"
+        :refresh="refresh"
+        :currentStatus="currentStatus"
+      />
     </a-tab-pane>
-    <a-tab-pane key="2" :tab="'处理中(' + jobCount.active + ')'">
-      <JobTable :name="name" :queueName="queueName" status="active" />
+    <a-tab-pane key="active" :tab="'处理中(' + jobCount.active + ')'">
+      <JobTable
+        :name="name"
+        :queueName="queueName"
+        status="active"
+        :count="jobCount.active"
+        :refresh="refresh"
+        :currentStatus="currentStatus"
+      />
     </a-tab-pane>
-    <a-tab-pane key="3" :tab="'已完成(' + jobCount.completed + ')'">
-      <JobTable :name="name" :queueName="queueName" status="completed" />
+    <a-tab-pane key="completed" :tab="'已完成(' + jobCount.completed + ')'">
+      <JobTable
+        :name="name"
+        :queueName="queueName"
+        status="completed"
+        :count="jobCount.completed"
+        :refresh="refresh"
+        :currentStatus="currentStatus"
+      />
     </a-tab-pane>
-    <a-tab-pane key="4" :tab="'延迟中(' + jobCount.delayed + ')'">
-      <JobTable :name="name" :queueName="queueName" status="delayed" />
+    <a-tab-pane key="delayed" :tab="'延迟中(' + jobCount.delayed + ')'">
+      <JobTable
+        :name="name"
+        :queueName="queueName"
+        status="delayed"
+        :count="jobCount.delayed"
+        :refresh="refresh"
+        :currentStatus="currentStatus"
+      />
     </a-tab-pane>
-    <a-tab-pane key="5" :tab="'失败(' + jobCount.failed + ')'">
-      <JobTable :name="name" :queueName="queueName" status="failed" />
+    <a-tab-pane key="failed" :tab="'失败(' + jobCount.failed + ')'">
+      <JobTable
+        :name="name"
+        :queueName="queueName"
+        status="failed"
+        :count="jobCount.failed"
+        :refresh="refresh"
+        :currentStatus="currentStatus"
+      />
     </a-tab-pane>
-    <a-tab-pane key="6" :tab="'暂停(' + jobCount.paused + ')'">
-      <JobTable :name="name" :queueName="queueName" status="paused" />
+    <a-tab-pane key="paused" :tab="'暂停(' + jobCount.paused + ')'">
+      <JobTable
+        :name="name"
+        :queueName="queueName"
+        status="paused"
+        :count="jobCount.paused"
+        :refresh="refresh"
+        :currentStatus="currentStatus"
+      />
     </a-tab-pane>
   </a-tabs>
 </template>
 <script lang="ts">
-import { defineComponent, onMounted, ref, watch } from "vue";
+import {
+  defineComponent,
+  onBeforeUnmount,
+  onMounted,
+  onUnmounted,
+  ref,
+  watch,
+} from "vue";
 import { get } from "../request";
 import JobTable from "./jobtable.vue";
 export default defineComponent({
   name: "JobTag",
   data() {
-    return {
-    };
+    return {};
   },
   props: {
     name: String,
@@ -50,17 +98,17 @@ export default defineComponent({
       if (!props.name || !props.queueName) {
         return;
       }
-      get("/job/count", { name: props.name, queue_name: props.queueName }).then(
-        (response) => {
+      get("/job/count", { name: props.name, queue_name: props.queueName })
+        .then((response) => {
           jobCount.value = response.data;
-        }
-      ).catch(err=>{
-        console.log(err);
-      });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     };
     watch(
-      () => props.name,
-      () => {
+      () => [props.name, props.queueName],
+      (newData, oldData) => {
         getJobCount();
       },
       {
@@ -68,17 +116,28 @@ export default defineComponent({
         immediate: true,
       }
     );
-    watch(
-      () => props.queueName,
-      () => {
-        getJobCount();
-      }
-    );
+    let timer: number = 0;
     onMounted(() => {
       getJobCount();
-      const timer = setInterval(getJobCount, 5000);
+      timer = setInterval(getJobCount, 5000);
     });
-    return { activeKey: ref("1"), jobCount, getJobCount };
+    onBeforeUnmount(() => {
+      clearInterval(timer);
+    });
+    const refresh = ref("");
+    const currentStatus=ref('waiting');
+    const tabChange = function (activeKey: any) {
+      refresh.value = activeKey;
+      currentStatus.value=activeKey;
+    };
+    return {
+      activeKey: ref("waiting"),
+      jobCount,
+      getJobCount,
+      refresh,
+      tabChange,
+      currentStatus
+    };
   },
   watch: {},
   methods: {},

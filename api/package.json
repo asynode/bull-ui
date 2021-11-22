@@ -1,6 +1,6 @@
 {
   "name": "@asynode/bull-ui",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Bull Queue Manager with UI",
   "main": "index.js",
   "types": "index.d.ts",
