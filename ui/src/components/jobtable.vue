@@ -20,7 +20,7 @@
             <template #title> {{ text }}</template>
             {{ text.substr(0, 50) }}......
           </a-tooltip> -->
-          <span v-if="text.length>50"> {{ text.substr(0, 50) }}......</span>
+          <span v-if="text.length > 50"> {{ text.substr(0, 50) }}......</span>
           <span v-else>{{ text }}</span>
         </template>
         <template v-if="column.dataIndex == 'other'">
@@ -291,6 +291,9 @@ export default defineComponent({
     name: String,
     queueName: String,
     status: String,
+    count: Number,
+    refresh: String,
+    currentStatus: String,
   },
   setup(props) {
     const dateformat = function (date: Date, fmt: string) {
@@ -373,18 +376,27 @@ export default defineComponent({
         });
     };
     watch(
-      () => props.name,
+      () => [props.name, props.queueName, props.count],
       () => {
-        getJobs();
+        if (props.currentStatus == props.status) {
+          getJobs();
+        }
       }
     );
     watch(
-      () => props.queueName,
+      () => props.refresh,
       () => {
-        getJobs();
+        if (props.refresh == props.status) {
+          console.log("refresh");
+          pagination.value = {
+            current: 1,
+            pageSize: 20,
+            total: 0,
+          };
+          getJobs();
+        }
       }
     );
-
     const visible = ref<boolean>(false);
     let addJobData = reactive({ data: "", delay: 0, priority: 0 });
     const showModal = () => {
