@@ -46,7 +46,7 @@ export default class MainControll {
 
     async addJob(ctx: Application.ParameterizedContext) {
         const service = new QueueService();
-        const query = ctx.request.body;
+        const query =ctx.request.body;
         const result = await service.addJob(<string>query.name, <string>query.queue_name, <string>query.data, Utility.toNumber(query.delay), query.priority);
         ctx.body = JSON.stringify(result, null, 4);
     }

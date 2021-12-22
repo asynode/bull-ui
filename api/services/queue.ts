@@ -229,10 +229,10 @@ export class QueueService {
         if (priority == 0) {
             priority = undefined;
         }
-        const JOB_TTL = 600 * 1000;
+        const JOB_TTL = 30 * 60 * 1000;
         let job: any = null;
         if (typeof data == "string") {
-            job = await instance.add(data, data, {
+            job = await instance.add(JSON.parse(data), {
                 attempts: 3,
                 delay: delay,
                 timeout: JOB_TTL,
