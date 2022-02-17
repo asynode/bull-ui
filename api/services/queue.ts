@@ -39,8 +39,9 @@ export class QueueService {
         }
         const instanceArr = envInstance.split(',');
         instanceArr.forEach((item) => {
-            const configs = getConfigurations(['BULL_QUEUE_NAME_' + item, "BULL_QUEUE_REDIS_" + item, "BULL_QUEUE_QUEUE_" + item]);
+            const configs = getConfigurations(['BULL_QUEUE_NAME_' + item, "BULL_QUEUE_PREFIX_" + item, "BULL_QUEUE_REDIS_" + item, "BULL_QUEUE_QUEUE_" + item]);
             const name = configs.get("BULL_QUEUE_NAME_" + item);
+            const prefix = configs.get("BULL_QUEUE_PREFIX_" + item);
             const redis = configs.get("BULL_QUEUE_REDIS_" + item);
             const queuestr = configs.get("BULL_QUEUE_QUEUE_" + item);
             if (!name || !redis || !queuestr) {
@@ -49,7 +50,7 @@ export class QueueService {
             const queues = queuestr.split(',');
             const queueInstance = new Map<string, Queue.Queue>();
             queues.forEach((q) => {
-                const queue = new Queue(q, redis);
+                const queue = new Queue(q, redis, { prefix: prefix });
                 queueInstance.set(q, queue);
             });
 
